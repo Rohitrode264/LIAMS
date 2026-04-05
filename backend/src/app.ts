@@ -13,10 +13,17 @@ import { errorHandler } from "./middleware/error.middleware.js";
 import { initCronJobs } from "./utils/cron.js";
 import mongoose from "mongoose";
 import helmet from "helmet";
+import dns from "dns";
 import { rateLimit } from "express-rate-limit";
 
 const app = express();
 
+try {
+  dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  console.log("Custom DNS applied");
+} catch (err) {
+  console.log("DNS override failed:", err);
+}
 // Security Hardening
 app.use(helmet());
 

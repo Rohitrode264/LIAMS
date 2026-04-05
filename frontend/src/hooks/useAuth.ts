@@ -55,3 +55,27 @@ export const useLogin = () => {
         }
     });
 };
+
+export const useForgotPassword = () => {
+    return useMutation({
+        mutationFn: authApi.forgotPassword,
+        onSuccess: (data) => {
+            toast.success(data.message);
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || 'Request failed');
+        }
+    });
+};
+
+export const useResetPassword = () => {
+    return useMutation({
+        mutationFn: authApi.resetPassword,
+        onSuccess: (data) => {
+            toast.success(data.message);
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || 'Reset failed');
+        }
+    });
+};

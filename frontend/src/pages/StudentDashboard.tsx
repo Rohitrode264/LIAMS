@@ -3,9 +3,9 @@ import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { useBookings } from '../hooks/useBookings';
 import { BookingStatus } from '../types';
-import { 
-    Building2, CalendarClock, ArrowRight, 
-    Clock, 
+import {
+    Building2, CalendarClock, ArrowRight,
+    Clock,
     FileText, PlusCircle, History
 } from 'lucide-react';
 import { StatCard } from '../components/StatCard';
@@ -33,8 +33,8 @@ const StatusDot = ({ status }: { status: BookingStatus }) => {
 export const StudentDashboard = () => {
     const { user } = useAuthStore();
     const navigate = useNavigate();
-    const { data, isLoading } = useBookings(1, 10);
-    
+    const { data, isLoading } = useBookings(1, 5);
+
     const bookings = data?.bookings || [];
     const activeCount = bookings.filter(b => b.status === BookingStatus.APPROVED).length;
     const pendingCount = bookings.filter(b => b.status === BookingStatus.PENDING).length;
@@ -44,11 +44,11 @@ export const StudentDashboard = () => {
 
     return (
         <div className="page-enter space-y-8">
-            <PageHeader 
+            <PageHeader
                 title={`Welcome, ${firstName}`}
                 subtitle="Manage your lab reservations and project applications."
                 action={
-                    <button 
+                    <button
                         onClick={() => navigate('/student/labs')}
                         className="btn btn-primary text-sm"
                     >
@@ -59,31 +59,31 @@ export const StudentDashboard = () => {
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard 
-                    label="Upcoming Sessions" 
-                    value={activeCount} 
-                    icon={<CalendarClock size={18} />} 
+                <StatCard
+                    label="Upcoming Sessions"
+                    value={activeCount}
+                    icon={<CalendarClock size={18} />}
                     iconColor="bg-blue-50 text-blue-600"
                     subtitle="Confirmed bookings"
                 />
-                <StatCard 
-                    label="Pending Requests" 
-                    value={pendingCount} 
-                    icon={<Clock size={18} />} 
+                <StatCard
+                    label="Pending Requests"
+                    value={pendingCount}
+                    icon={<Clock size={18} />}
                     iconColor="bg-amber-50 text-amber-600"
                     subtitle="Awaiting approval"
                 />
-                <StatCard 
-                    label="Total Bookings" 
-                    value={totalCount} 
-                    icon={<Building2 size={18} />} 
+                <StatCard
+                    label="Total Bookings"
+                    value={totalCount}
+                    icon={<Building2 size={18} />}
                     iconColor="bg-green-50 text-green-600"
                     subtitle="History"
                 />
-                <StatCard 
-                    label="Applications" 
-                    value="--" 
-                    icon={<FileText size={18} />} 
+                <StatCard
+                    label="Applications"
+                    value="--"
+                    icon={<FileText size={18} />}
                     iconColor="bg-purple-50 text-purple-600"
                     subtitle="Active projects"
                 />
@@ -120,14 +120,14 @@ export const StudentDashboard = () => {
             <div>
                 <div className="flex items-center justify-between mb-3">
                     <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Recent Activity</h2>
-                    <button 
+                    <button
                         onClick={() => navigate('/student/bookings')}
                         className="text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider hover:opacity-80 transition-opacity"
                     >
                         View All
                     </button>
                 </div>
-                
+
                 <div className="card overflow-hidden bg-[var(--surface)]">
                     {isLoading ? (
                         <div className="p-6 space-y-3">

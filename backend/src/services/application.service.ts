@@ -65,13 +65,29 @@ export async function createApplication(studentId: string, dto: CreateApplicatio
     }
 }
 
-export async function getMyApplications(studentId: string) {
-    return Application.find({ student_id: studentId })
-        .populate("professor_id", "name email")
-        .populate("hod_id", "name email")
-        .populate("accounts_id", "name email")
-        .populate("current_reviewer_id", "name email")
-        .sort({ createdAt: -1 });
+export async function getMyApplications(studentId: string, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+    const [applications, total] = await Promise.all([
+        Application.find({ student_id: studentId })
+            .populate("professor_id", "name email")
+            .populate("hod_id", "name email")
+            .populate("accounts_id", "name email")
+            .populate("current_reviewer_id", "name email")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit),
+        Application.countDocuments({ student_id: studentId }),
+    ]);
+
+    return {
+        applications,
+        pagination: {
+            total,
+            page,
+            limit,
+            pages: Math.ceil(total / limit)
+        }
+    };
 }
 
 export async function getReviewQueue(reviewerId: string, status: ApplicationStatus) {
@@ -197,7 +213,7 @@ export async function getAllApplications() {
         .sort({ createdAt: -1 });
 }
 
-export async function getReviewHistory(reviewerId: string, roles: string[]) {
+export async function getReviewHistory(reviewerId: string, roles: string[], page = 1, limit = 10) {
     let query: any = {};
 
     if (roles.includes("Professor")) {
@@ -210,13 +226,29 @@ export async function getReviewHistory(reviewerId: string, roles: string[]) {
         query.accounts_id = reviewerId;
         query.status = { $in: [ApplicationStatus.APPROVED, ApplicationStatus.REJECTED] };
     } else {
-        return [];
+        return { applications: [], pagination: { total: 0, page, limit, pages: 0 } };
     }
 
-    return Application.find(query)
-        .populate("student_id", "name email")
-        .populate("professor_id", "name email")
-        .populate("hod_id", "name email")
-        .populate("accounts_id", "name email")
-        .sort({ updatedAt: -1 });
+    const skip = (page - 1) * limit;
+    const [applications, total] = await Promise.all([
+        Application.find(query)
+            .populate("student_id", "name email")
+            .populate("professor_id", "name email")
+            .populate("hod_id", "name email")
+            .populate("accounts_id", "name email")
+            .sort({ updatedAt: -1 })
+            .skip(skip)
+            .limit(limit),
+        Application.countDocuments(query),
+    ]);
+
+    return {
+        applications,
+        pagination: {
+            total,
+            page,
+            limit,
+            pages: Math.ceil(total / limit)
+        }
+    };
 }

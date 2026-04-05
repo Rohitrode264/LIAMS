@@ -9,10 +9,13 @@ import { CheckCircle2, ClipboardList, Clock, CalendarCheck, Package, History } f
 import { StatCard } from '../components/StatCard';
 import { PageHeader } from '../components/PageHeader';
 
+import { useNavigate } from 'react-router-dom';
+
 export const AssistantDashboard = () => {
-    const { data, isLoading } = useBookings(1, 100);
+    const navigate = useNavigate();
+    const { data, isLoading } = useBookings(1, 6);
     const completeBooking = useCompleteBooking();
-    const [filterStatus, setFilterStatus] = useState<BookingStatus | 'ALL'>(BookingStatus.PENDING);
+    const [filterStatus, setFilterStatus] = useState<BookingStatus | 'ALL'>(BookingStatus.APPROVED);
 
     const bookings: Booking[] = data?.bookings || [];
     const pendingCount = bookings.filter(b => b.status === BookingStatus.PENDING).length;
@@ -38,48 +41,56 @@ export const AssistantDashboard = () => {
 
     return (
         <div className="page-enter space-y-8">
-            <PageHeader 
-                title="Lab Operations" 
-                subtitle="Manage equipment handovers and active sessions in your assigned labs." 
+            <PageHeader
+                title="Lab Operations"
+                subtitle="Manage equipment handovers and active sessions in your assigned labs."
             />
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard 
-                    label="Pending Action" 
-                    value={pendingCount} 
-                    icon={<Clock size={18} />} 
-                    iconColor="bg-amber-50 text-amber-600" 
-                    subtitle="Handovers needed" 
+                <StatCard
+                    label="Pending Action"
+                    value={pendingCount}
+                    icon={<Clock size={18} />}
+                    iconColor="bg-amber-50 text-amber-600"
+                    subtitle="Handovers needed"
                 />
-                <StatCard 
-                    label="Active Today" 
-                    value={activeCount} 
-                    icon={<CalendarCheck size={18} />} 
-                    iconColor="bg-green-50 text-green-600" 
-                    subtitle="Currently in use" 
+                <StatCard
+                    label="Active Today"
+                    value={activeCount}
+                    icon={<CalendarCheck size={18} />}
+                    iconColor="bg-green-50 text-green-600"
+                    subtitle="Currently in use"
                 />
-                <StatCard 
-                    label="Completed" 
-                    value={completedCount} 
-                    icon={<CheckCircle2 size={18} />} 
-                    iconColor="bg-blue-50 text-blue-600" 
-                    subtitle="Return verified" 
+                <StatCard
+                    label="Completed"
+                    value={completedCount}
+                    icon={<CheckCircle2 size={18} />}
+                    iconColor="bg-blue-50 text-blue-600"
+                    subtitle="Return verified"
                 />
-                <StatCard 
-                    label="Resource Load" 
-                    value="Normal" 
-                    icon={<Package size={18} />} 
-                    iconColor="bg-purple-50 text-purple-600" 
-                    subtitle="Lab status" 
+                <StatCard
+                    label="Resource Load"
+                    value="Normal"
+                    icon={<Package size={18} />}
+                    iconColor="bg-purple-50 text-purple-600"
+                    subtitle="Lab status"
                 />
             </div>
 
             {/* Tasks Section */}
             <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Operation Tasks</h2>
-                    
+                    <div className="flex items-center gap-4">
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Recent Tasks</h2>
+                        <button
+                            onClick={() => navigate('/admin/bookings')}
+                            className="text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider hover:opacity-80 transition-opacity"
+                        >
+                            View All Activity
+                        </button>
+                    </div>
+
                     {/* Filter Tabs - Unified Style */}
                     <div className="flex gap-1 p-1 bg-[var(--surface-2)] rounded-lg w-fit">
                         {filters.map(f => (
@@ -140,10 +151,9 @@ export const AssistantDashboard = () => {
                                     </button>
                                 ) : (
                                     <div className="mt-auto pt-2 flex items-center justify-between border-t border-[color:var(--border)]">
-                                        <span className={`badge ${
-                                            booking.status === BookingStatus.PENDING ? 'badge-amber' : 
+                                        <span className={`badge ${booking.status === BookingStatus.PENDING ? 'badge-amber' :
                                             booking.status === BookingStatus.COMPLETED ? 'badge-blue' : 'badge-gray'
-                                        } py-0.5 px-2`}>
+                                            } py-0.5 px-2`}>
                                             {booking.status}
                                         </span>
                                         <History size={14} className="text-[var(--muted)] opacity-30" />

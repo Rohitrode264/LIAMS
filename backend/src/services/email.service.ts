@@ -18,7 +18,7 @@ export async function sendOTP(email: string, otp: string) {
 
     try {
         await transporter.sendMail({
-            from: `"IITD Lab System" <${user}>`,
+            from: `"LIAMS" <${user}>`,
             to: email,
             subject: "Your OTP Verification Code",
             text: `Your OTP is ${otp}. It expires in 5 minutes.`,
@@ -50,10 +50,10 @@ export async function sendBookingNotification(email: string, details: {
 
     try {
         await transporter.sendMail({
-    from: `"IITD Lab System" <${user}>`,
-    to: email,
-    subject: `New Booking Request: ${details.componentName}`,
-    html: `
+            from: `"LIAMS" <${user}>`,
+            to: email,
+            subject: `New Booking Request: ${details.componentName}`,
+            html: `
         <div style="font-family: Arial, sans-serif; background-color: #f6f8fa; padding: 20px;">
             <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; padding: 20px; border: 1px solid #e0e0e0;">
                 
@@ -94,13 +94,13 @@ export async function sendBookingNotification(email: string, details: {
                 </div>
 
                 <p style="margin-top: 20px; font-size: 12px; color: #888; text-align: center;">
-                    Please log in to the IITD Lab Portal to approve or reject this request.
+                    Please log in to the LIAMS Portal to approve or reject this request.
                 </p>
 
             </div>
         </div>
     `,
-});
+        });
     } catch (error) {
         console.error(`[Email Service] Error sending notification to ${email}:`, error);
     }
@@ -126,18 +126,18 @@ export async function sendWelcomeEmail(email: string, details: {
 
     try {
         await transporter.sendMail({
-            from: `"IITD MSE Lab Portal" <${user}>`,
+            from: `"LIAMS" <${user}>`,
             to: email,
-            subject: "Welcome to IITD-MSE Lab Infrastructure Portal",
+            subject: "Welcome to LIAMS",
             html: `
                 <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
                     <div style="background-color: #1e293b; padding: 24px; text-align: center;">
-                        <h2 style="color: #ffffff; margin: 0;">IIT Delhi - MSE Department</h2>
-                        <p style="color: #94a3b8; margin: 8px 0 0 0; font-size: 14px;">Lab Infrastructure Allocation System</p>
+                        <h2 style="color: #ffffff; margin: 0;">LIAMS</h2>
+                        <p style="color: #94a3b8; margin: 8px 0 0 0; font-size: 14px;">IITD–MSE Department</p>
                     </div>
                     <div style="padding: 32px; background-color: #ffffff;">
                         <h3 style="margin-top: 0; color: #1e293b;">Welcome, ${details.name}!</h3>
-                        <p>Your account has been successfully created on the IITD-MSE Lab Infrastructure Management Portal.</p>
+                        <p>Your account has been successfully created on the LIAMS Portal.</p>
                         
                         <div style="background-color: #f8fafc; border-radius: 8px; padding: 20px; margin: 24px 0;">
                             <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #64748b; text-transform: uppercase;">Your Login Credentials</p>
@@ -154,7 +154,7 @@ export async function sendWelcomeEmail(email: string, details: {
                     </div>
                     <div style="background-color: #f1f5f9; padding: 16px; text-align: center; font-size: 12px; color: #64748b;">
                         <p style="margin: 0;">This is an automated message. Please do not reply to this email.</p>
-                        <p style="margin: 4px 0 0 0;">Department of Materials Science and Engineering, IIT Delhi</p>
+                        <p style="margin: 4px 0 0 0;">IITD–MSE Department</p>
                     </div>
                 </div>
             `,

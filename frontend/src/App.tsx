@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
+import { ForgotPassword } from './pages/ForgotPassword';
 import { Dashboard } from './pages/Dashboard';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AppLayout } from './layouts/AppLayout';
@@ -16,6 +17,7 @@ import { LabsPage as AdminLabsPage } from './pages/admin/LabsPage';
 import { ComponentsPage } from './pages/admin/ComponentsPage';
 import { UsersPage } from './pages/admin/UsersPage';
 import { HierarchyPage } from './pages/admin/HierarchyPage';
+import { AllBookingsPage } from './pages/admin/AllBookingsPage';
 
 // Student pages
 import { LabsPage as StudentLabsPage } from './pages/student/LabsPage';
@@ -48,6 +50,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
@@ -57,7 +60,7 @@ function App() {
               <Route path="/admin/labs" element={<AdminLabsPage />} />
               <Route path="/admin/components" element={<ComponentsPage />} />
               <Route path="/admin/users" element={<UsersPage />} />
-              <Route path="/admin/bookings" element={<Dashboard />} />
+              <Route path="/admin/bookings" element={<AllBookingsPage />} />
               <Route path="/admin/hierarchy" element={<HierarchyPage />} />
 
               {/* Student */}

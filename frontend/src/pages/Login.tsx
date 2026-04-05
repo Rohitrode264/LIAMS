@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { useLogin } from '../hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
-import { FlaskConical, Moon, Sun, Mail, Lock } from 'lucide-react';
-import { useThemeStore } from '../store/themeStore';
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { mode, toggle } = useThemeStore();
 
     const loginMutation = useLogin();
     const navigate = useNavigate();
@@ -21,142 +18,109 @@ export const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[var(--bg)] p-4 sm:p-8 selection:bg-[var(--primary-muted)] overflow-hidden transition-colors duration-500 relative">
-            {/* Ambient Background Elements */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[var(--primary)]/10 blur-[120px] rounded-full mix-blend-multiply dark:mix-blend-screen animate-pulse" />
-                <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/10 blur-[100px] rounded-full mix-blend-multiply dark:mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="min-h-screen flex items-center justify-center relative font-inter overflow-hidden bg-[var(--bg)]">
+            {/* Split Screen Background Effect */}
+            <div className="absolute inset-0 flex pointer-events-none z-0">
+                <div className="w-1/2 bg-[var(--primary)]"></div>
+                <div className="w-1/2 bg-[var(--bg)]"></div>
             </div>
 
-            <button
-                type="button"
-                onClick={toggle}
-                className="absolute top-6 right-6 p-2.5 rounded-full bg-[var(--surface)] hover:bg-[var(--surface-2)] text-[var(--muted)] hover:text-[var(--text)] border border-[var(--border)] transition-all shadow-sm z-50 active:scale-90"
-            >
-                {mode === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
+            {/* Main Card */}
+            <div className="relative z-10 w-full max-w-[900px] flex flex-col md:flex-row shadow-[0_20px_60px_rgba(30,50,90,0.1)] mb-8 mt-8 rounded-2xl overflow-hidden min-h-[600px] mx-4 dark:shadow-md dark:shadow-black/30">
 
-            {/* Main Window */}
-            <div className="relative z-10 w-full max-w-5xl flex flex-col lg:flex-row bg-[var(--surface)] border border-[var(--border)] rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden min-h-[600px]">
-                
-                {/* Left Branding */}
-                <div className="hidden lg:flex flex-col justify-center flex-1 p-16 relative overflow-hidden bg-[var(--surface)]">
-                    <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }} />
-                    
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-12">
-                            <div className="w-10 h-10 bg-[var(--primary)] rounded-lg flex items-center justify-center shadow-lg">
-                                <FlaskConical className="text-white w-5 h-5" />
-                            </div>
-                            <span className="text-xl font-bold text-[var(--text)] tracking-tight">IITD-MSE</span>
-                        </div>
-                        
-                        <h1 className="text-4xl font-bold text-[var(--text)] tracking-tight leading-tight mb-5">
-                            Log in to your account
-                        </h1>
-                        <p className="text-base text-[var(--muted)] mb-12 max-w-md">
-                            Access the Materials Science & Engineering Department laboratory infrastructure and resource management system.
-                        </p>
+                {/* Left Side - Blue CTA */}
+                <div className="flex-1 bg-[var(--primary)] p-10 md:p-16 flex flex-col justify-center relative overflow-hidden text-center md:text-left">
+                    {/* Geometric Shapes Background */}
+                    <div className="absolute inset-0 pointer-events-none">
+                        {/* Triangles */}
+                        <div className="absolute top-[25%] left-[10%] w-0 h-0 border-l-[25px] border-r-[25px] border-b-[45px] border-l-transparent border-r-transparent border-b-black opacity-10 transform -rotate-12 dark:opacity-20"></div>
+                        <div className="absolute bottom-[10%] right-[10%] w-0 h-0 border-l-[60px] border-r-[60px] border-b-[100px] border-l-transparent border-r-transparent border-b-black opacity-5 transform rotate-45 dark:opacity-10"></div>
+                        <div className="absolute bottom-[25%] right-[35%] w-0 h-0 border-l-[20px] border-r-[20px] border-b-[35px] border-l-transparent border-r-transparent border-b-black opacity-10 transform -rotate-45 dark:opacity-20"></div>
 
-                        <div className="space-y-6">
-                            {[
-                                { title: 'Centralized Bookings', desc: 'Reserve high-end equipment with real-time availability.' },
-                                { title: 'Ensure Compliance', desc: 'Secure institutional access with role-based approvals.' },
-                            ].map((feature, i) => (
-                                <div key={i} className="flex gap-4">
-                                    <div className="mt-1 w-6 h-6 rounded-full bg-[var(--primary)]/10 flex items-center justify-center shrink-0 border border-[var(--primary)]/20">
-                                        <div className="w-2 h-2 rounded-full bg-[var(--primary)]" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-[var(--text)] text-sm">{feature.title}</h3>
-                                        <p className="text-[13px] text-[var(--muted)] mt-1 max-w-[280px] leading-relaxed">{feature.desc}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        {/* Circles */}
+                        <div className="absolute top-[10%] right-[15%] w-24 h-24 bg-black opacity-5 rounded-full dark:opacity-10"></div>
+                        <div className="absolute top-[30%] right-[35%] w-10 h-10 bg-black opacity-10 rounded-full dark:opacity-20"></div>
+                        <div className="absolute bottom-[25%] left-[15%] w-14 h-14 bg-black opacity-10 rounded-full dark:opacity-20"></div>
                     </div>
-                    
-                    <div className="absolute bottom-10 left-16 text-[var(--muted)]/40 text-[11px] font-bold tracking-widest uppercase">
-                        IIT Delhi • Materials Science & Engg
+
+                    <div className="relative z-10 max-w-[280px] mx-auto md:mx-0">
+                        <h2 className="text-4xl md:text-[44px] font-bold text-white mb-6 leading-[1.1] tracking-tight">
+                            Research & <br />
+                            Excellence
+                        </h2>
+                        <p className="text-blue-50 text-sm font-medium leading-relaxed opacity-90">
+                            Access world-class facilities and manage your lab allocations seamlessly within the IIT Delhi MSE ecosystem.
+                        </p>
                     </div>
                 </div>
 
-                {/* Right Form Card */}
-                <div className="flex-1 p-6 sm:p-12 flex items-center justify-center lg:bg-[var(--surface-2)]/40 relative">
-                    <div className="w-full max-w-[400px] bg-[var(--surface)] p-8 sm:p-10 rounded-[2rem] border border-[var(--border)] shadow-xl relative z-10">
-                        
-                        <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-                            <div className="w-10 h-10 bg-[var(--primary)] rounded-lg flex items-center justify-center shadow-lg">
-                                <FlaskConical className="text-white w-5 h-5" />
+                {/* Right Side - Form (White) */}
+                <div className="flex-1 bg-[var(--surface)] p-8 md:p-16 flex flex-col justify-center items-center">
+                    <div className="w-full max-w-xs">
+                        {/* Logo & Mobile Heading */}
+                        <div className="flex flex-col items-center mb-6 md:mb-8">
+                            <div className="w-16 h-16 bg-[var(--surface)] rounded-2xl shadow-sm border border-[var(--border)] flex items-center justify-center p-2 mb-4">
+                                <img src="/Logo.png" alt="Logo" className="w-full h-full object-contain" />
                             </div>
-                            <span className="text-xl font-bold text-[var(--text)] tracking-tight">IITD-MSE</span>
+                            <h2 className="text-xl font-bold text-[var(--text)] text-center">Welcome to LIAMS</h2>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div className="space-y-1.5">
-                                <label className="block text-[13px] font-medium text-[var(--text)]">
-                                    Institutional Email
-                                </label>
-                                <div className="group relative">
-                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-[var(--text)] transition-colors">
-                                        <Mail className="w-4.5 h-4.5 box-content" />
-                                    </span>
-                                    <input
-                                        type="email"
-                                        required
-                                        className="w-full pl-11 pr-4 py-2.5 bg-transparent border border-[var(--border)] focus:border-[var(--muted)] rounded-xl outline-none transition-all text-[14px] text-[var(--text)] placeholder:text-[var(--muted)]/50 box-shadow-none"
-                                        placeholder="user@mse.iitd.ac.in"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        disabled={loginMutation.isPending}
-                                    />
-                                </div>
-                            </div>
+                        <p className="text-[13px] text-[var(--text)] opacity-70 text-center mb-8 px-2 font-medium">
+                            Sign in to access your lab infrastructure dashboard and manage system resources.
+                        </p>
 
-                            <div className="space-y-1.5">
-                                <div className="flex justify-between items-center">
-                                    <label className="block text-[13px] font-medium text-[var(--text)]">
-                                        Password
-                                    </label>
-                                    <button type="button" className="text-[12px] font-medium text-[var(--primary)] hover:underline">Forgot Password?</button>
-                                </div>
-                                <div className="group relative">
-                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-[var(--text)] transition-colors">
-                                        <Lock className="w-4.5 h-4.5 box-content" />
-                                    </span>
-                                    <input
-                                        type="password"
-                                        required
-                                        className="w-full pl-11 pr-4 py-2.5 bg-transparent border border-[var(--border)] focus:border-[var(--muted)] rounded-xl outline-none transition-all text-[14px] text-[var(--text)] placeholder:text-[var(--muted)]/50"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        disabled={loginMutation.isPending}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="pt-4">
-                                <button
-                                    type="submit"
-                                    className="w-full h-11 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-medium rounded-xl flex items-center justify-center transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_14px_0_var(--primary-muted)]"
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[12px] font-semibold text-[var(--text)] opacity-70">Email</label>
+                                <input
+                                    type="email"
+                                    required
+                                    className="w-full h-12 bg-[var(--surface-2)] focus:bg-[var(--surface)] border border-transparent focus:border-[var(--primary)] rounded-xl px-4 text-sm outline-none transition-all text-[var(--text)] placeholder:text-[var(--muted)]/50"
+                                    placeholder="Type your email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     disabled={loginMutation.isPending}
-                                >
-                                    <span className="text-[14px]">{loginMutation.isPending ? 'Logging in...' : 'Login'}</span>
-                                </button>
+                                />
                             </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[12px] font-semibold text-[var(--text)] opacity-70">Password</label>
+                                <input
+                                    type="password"
+                                    required
+                                    className="w-full h-12 bg-[var(--surface-2)] focus:bg-[var(--surface)] border border-transparent focus:border-[var(--primary)] rounded-xl px-4 text-sm outline-none transition-all text-[var(--text)] placeholder:text-[var(--muted)]/50"
+                                    placeholder="Type your password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    disabled={loginMutation.isPending}
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between pt-1 pb-2">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" className="w-4 h-4 rounded border-[var(--border)] text-[var(--primary)] focus:ring-[var(--primary)]" />
+                                    <span className="text-xs font-semibold text-[var(--text)] opacity-80">Remember me</span>
+                                </label>
+                                <Link to="/forgot-password" className="text-xs font-semibold text-[var(--primary)] hover:underline">Forgot password?</Link>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full h-12 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-medium rounded-xl transition-all disabled:opacity-50 shadow-lg shadow-blue-500/25 active:scale-[0.98]"
+                                disabled={loginMutation.isPending}
+                            >
+                                {loginMutation.isPending ? 'Logging in...' : 'Sign In'}
+                            </button>
                         </form>
 
-                        <div className="mt-8 text-center border-t border-[var(--border)]/50 pt-6">
-                            <p className="text-[13px] text-[var(--muted)]">
-                                Do not have an account?{' '}
-                                <Link to="/signup" className="text-[var(--primary)] font-medium hover:underline transition-all">
-                                    Sign Up
-                                </Link>
+                        <div className="mt-12 text-center">
+                            <p className="text-xs text-[var(--text)] opacity-70 font-medium">
+                                Don’t have an account? <Link to="/signup" className="text-[var(--primary)] font-semibold hover:underline opacity-100">Sign up</Link>
                             </p>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );

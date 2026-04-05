@@ -2,10 +2,10 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import {
-    FlaskConical, Sun, Moon, LogOut, LayoutDashboard,
+    Sun, Moon, LogOut, LayoutDashboard,
     Building2, Users, ClipboardList, Menu, X, Bell,
     ChevronRight, CalendarClock, FileText, GitBranch, Send, Inbox,
-    Microscope, History as HistoryIcon,
+    Microscope,
     ClipboardClockIcon
 } from 'lucide-react';
 import { useState } from 'react';
@@ -173,18 +173,19 @@ export const AppLayout = () => {
                 className="flex items-center gap-2.5 px-4 py-4 cursor-pointer border-b border-[color:var(--border)] shrink-0"
                 onClick={() => { navigate('/dashboard'); setSidebarOpen(false); }}
             >
-                <div className="w-8 h-8 bg-[var(--primary)] rounded-lg flex items-center justify-center shadow-[0_2px_8px_rgba(37,99,235,0.4)] shrink-0">
-                    <FlaskConical className="text-white w-4 h-4" />
+                <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-premium shrink-0 overflow-hidden border border-[var(--border)]">
+                    <img src="/Logo.png" alt="LIAMS Logo" className="w-full h-full object-contain p-0.5" />
                 </div>
                 <div>
-                    <p className="font-bold text-[15px] text-[var(--text)] leading-tight">NexusLab</p>
-                    <p className="text-[10px] text-[var(--muted)] font-medium">IIT Delhi</p>
+                    <p className="font-bold text-[15px] text-[var(--text)] leading-tight">LIAMS</p>
+                    <p className="text-[10px] text-[var(--muted)] font-medium leading-tight">Lab Infrastructure and Application Management</p>
+                    <p className="text-[9px] text-[var(--muted)] opacity-60 font-bold uppercase tracking-wider mt-0.5">IITD–MSE Department</p>
                 </div>
             </div>
 
             {/* Nav */}
             <nav className="flex-1 py-4 px-3 space-y-5 overflow-y-auto">
-                
+
                 {nav.map((section, si) => (
                     <div key={si}>
                         {section.section && (
@@ -249,7 +250,7 @@ export const AppLayout = () => {
                         onClick={() => setSidebarOpen(false)}
                     />
                     <aside
-                        className="sidebar flex md:hidden z-[60] animate-in slide-in-from-left duration-250"
+                        className="sidebar flex md:hidden z-[60] animate-in slide-in-from-left duration-250 mesh-gradient"
                         style={{ position: 'fixed' }}
                     >
                         <div className="absolute top-3 right-3">
@@ -275,11 +276,26 @@ export const AppLayout = () => {
                         <Menu size={18} />
                     </button>
 
+                    {/* Mobile Logo Branding */}
+                    <div className="md:hidden flex items-center gap-2.5 ml-1" onClick={() => navigate('/dashboard')}>
+                        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm shrink-0 overflow-hidden border border-[var(--border)]">
+                            <img src="/Logo.png" alt="LIAMS Logo" className="w-full h-full object-contain p-0.5" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="font-black text-xs tracking-tighter text-[var(--primary)] uppercase leading-none">LIAMS</span>
+                            <span className="text-[7px] text-[var(--muted)] font-bold uppercase tracking-widest leading-none mt-0.5">IIT Delhi</span>
+                        </div>
+                    </div>
+
                     {/* Spacer */}
                     <div className="flex-1" />
 
                     {/* Actions */}
                     <div className="flex items-center gap-1">
+                        {/* Mobile Avatar */}
+                        <div className="md:hidden mr-2">
+                            <div className="avatar w-7 h-7 text-[9px] shadow-sm border border-[var(--border)]">{initials}</div>
+                        </div>
                         <button
                             onClick={toggle}
                             className="p-2 rounded-lg hover:bg-[var(--surface-2)] transition-colors"
@@ -292,7 +308,7 @@ export const AppLayout = () => {
                         <button className="p-2 rounded-lg hover:bg-[var(--surface-2)] transition-colors relative" title="Notifications">
                             <Bell size={16} className="text-[var(--muted)]" />
                         </button>
-                        <button 
+                        <button
                             onClick={handleLogout}
                             className="p-2 rounded-lg hover:bg-red-50 text-[var(--muted)] hover:text-red-600 transition-colors"
                             title="Sign out"
@@ -303,24 +319,27 @@ export const AppLayout = () => {
                 </header>
 
                 {/* ── Page Content ── */}
-                <main className="flex-1 p-3 pb-24 md:p-8 md:pb-8 page-enter">
+                <main className="flex-1 p-4 pb-24 md:p-8 md:pb-8 page-enter">
+
                     <Outlet />
                 </main>
             </div>
 
             {/* ── Mobile Bottom Navigation ── */}
-            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--surface)/95] backdrop-blur-xl border-t border-[color:var(--border)] pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
-                <div className="flex items-center justify-around h-16 px-2">
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--surface)]/80 backdrop-blur-xl border-t border-[color:var(--border)] pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+                <div className="flex items-center justify-around h-16 px-1.5">
                     {nav.flatMap(s => s.items).slice(0, 5).map(item => (
                         <button
                             key={item.path}
                             onClick={() => { navigate(item.path); setSidebarOpen(false); }}
-                            className={`flex flex-col items-center justify-center w-full h-full gap-1 transition-colors ${isActive(item.path) ? 'text-[var(--primary)]' : 'text-[var(--muted)] hover:text-[var(--text)]'}`}
+                            className={`flex flex-col items-center justify-center w-full h-full gap-1 transition-all ${isActive(item.path) ? 'text-[var(--primary)]' : 'text-[var(--muted)] opacity-60 hover:opacity-100'}`}
                         >
-                            <div className={`p-1.5 rounded-xl transition-colors ${isActive(item.path) ? 'bg-[var(--primary-muted)] text-[var(--primary)]' : ''}`}>
+                            <div className={`p-1.5 rounded-xl transition-all ${isActive(item.path) ? 'bg-[var(--primary)] text-white scale-110 shadow-lg shadow-blue-500/20' : ''}`}>
                                 {item.icon}
                             </div>
-                            <span className="text-[10px] font-bold truncate max-w-[64px] tracking-tight">{item.label}</span>
+                            <span className={`text-[9px] font-black tracking-tighter uppercase ${isActive(item.path) ? 'opacity-100 translate-y-0' : 'opacity-80 translate-y-0.5'}`}>
+                                {item.label.split(' ')[0]}
+                            </span>
                         </button>
                     ))}
                 </div>

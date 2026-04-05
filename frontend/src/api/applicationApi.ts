@@ -16,9 +16,9 @@ export const createApplication = async (payload: CreateApplicationPayload) => {
     return data.data;
 };
 
-export const getMyApplications = async (): Promise<Application[]> => {
-    const { data } = await api.get<{ success: boolean; data: Application[] }>("/applications/my");
-    return data.data;
+export const getMyApplications = async (page = 1, limit = 10): Promise<{ applications: Application[], pagination: any }> => {
+    const { data } = await api.get<{ success: boolean; applications: Application[], pagination: any }>(`/applications/my?page=${page}&limit=${limit}`);
+    return { applications: data.applications, pagination: data.pagination };
 };
 
 // ─── Review Queues ───────────────────────────────────────────────────────────
@@ -38,9 +38,9 @@ export const getAccountsQueue = async (): Promise<Application[]> => {
     return data.data;
 };
 
-export const getReviewHistory = async (): Promise<Application[]> => {
-    const { data } = await api.get<{ success: boolean; data: Application[] }>("/applications/review/history");
-    return data.data;
+export const getReviewHistory = async (page = 1, limit = 10): Promise<{ applications: Application[], pagination: any }> => {
+    const { data } = await api.get<{ success: boolean; applications: Application[], pagination: any }>(`/applications/review/history?page=${page}&limit=${limit}`);
+    return { applications: data.applications, pagination: data.pagination };
 };
 
 // ─── Review Action ───────────────────────────────────────────────────────────

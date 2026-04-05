@@ -102,9 +102,14 @@ export const AdminDashboard = () => {
 
             {/* Recent Bookings */}
             <div>
-                <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">                                                                                                                                                                                             Requests</h2>
-                    <span className="text-[11px] text-[var(--muted)]">{bookingsData?.pagination?.total || 0} total</span>
+                <div className="flex items-center justify-between mb-3 px-1">
+                    <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Recent Requests</h2>
+                    <button
+                        onClick={() => navigate('/admin/bookings')}
+                        className="text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider hover:opacity-80 transition-opacity"
+                    >
+                        View All Requests
+                    </button>
                 </div>
                 <div className="card overflow-hidden">
                     {loadingBookings ? (
@@ -129,7 +134,7 @@ export const AdminDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {bookings.slice(0, 10).map((b: Booking) => (
+                                    {bookings.slice(0, 5).map((b: Booking) => (
                                         <tr key={b._id}>
                                             <td className="font-medium text-[var(--text)]">{b.student_id?.name || '—'}</td>
                                             <td className="text-[var(--muted)]">

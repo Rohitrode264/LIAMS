@@ -16,8 +16,10 @@ export async function createApplication(req: AuthRequest, res: Response, next: N
 
 export async function getMyApplications(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-        const applications = await applicationService.getMyApplications(req.user.id);
-        res.json({ success: true, data: applications });
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const result = await applicationService.getMyApplications(req.user.id, page, limit);
+        res.json({ success: true, ...result });
     } catch (error) {
         next(error);
     }
@@ -93,11 +95,15 @@ export async function getAllApplications(req: AuthRequest, res: Response, next: 
 
 export async function getReviewHistory(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-        const applications = await applicationService.getReviewHistory(
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const result = await applicationService.getReviewHistory(
             req.user.id,
-            req.user.roles
+            req.user.roles,
+            page,
+            limit
         );
-        res.json({ success: true, data: applications });
+        res.json({ success: true, ...result });
     } catch (error) {
         next(error);
     }

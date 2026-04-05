@@ -11,8 +11,12 @@ import toast from 'react-hot-toast';
 import { StatCard } from '../components/StatCard';
 import { PageHeader } from '../components/PageHeader';
 
+import { useNavigate } from 'react-router-dom';
+// ... other imports ...
+
 export const InchargeDashboard = () => {
-    const { data, isLoading } = useBookings(1, 100);
+    const navigate = useNavigate();
+    const { data, isLoading } = useBookings(1, 6);
     const updateStatus = useUpdateBookingStatus();
     const [filterStatus, setFilterStatus] = useState<BookingStatus | 'ALL'>('ALL');
     const [assigned, setAssigned] = useState<Record<string, string>>({});
@@ -50,47 +54,55 @@ export const InchargeDashboard = () => {
 
     return (
         <div className="page-enter space-y-8">
-            <PageHeader 
-                title="Booking Management" 
-                subtitle="Review, approve, or reject lab infrastructure reservation requests." 
+            <PageHeader
+                title="Booking Management"
+                subtitle="Review, approve, or reject lab infrastructure reservation requests."
             />
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard 
-                    label="Pending Review" 
-                    value={pendingCount} 
-                    icon={<Clock size={18} />} 
-                    iconColor="bg-amber-50 text-amber-600" 
-                    subtitle="Awaiting action" 
+                <StatCard
+                    label="Pending Review"
+                    value={pendingCount}
+                    icon={<Clock size={18} />}
+                    iconColor="bg-amber-50 text-amber-600"
+                    subtitle="Awaiting action"
                 />
-                <StatCard 
-                    label="Today's Sessions" 
-                    value={activeTodayCount} 
-                    icon={<CalendarClock size={18} />} 
-                    iconColor="bg-green-50 text-green-600" 
-                    subtitle="Active reservations" 
+                <StatCard
+                    label="Today's Sessions"
+                    value={activeTodayCount}
+                    icon={<CalendarClock size={18} />}
+                    iconColor="bg-green-50 text-green-600"
+                    subtitle="Active reservations"
                 />
-                <StatCard 
-                    label="Completed" 
-                    value={completedCount} 
-                    icon={<CheckCircle size={18} />} 
-                    iconColor="bg-blue-50 text-blue-600" 
-                    subtitle="Closed historical" 
+                <StatCard
+                    label="Completed"
+                    value={completedCount}
+                    icon={<CheckCircle size={18} />}
+                    iconColor="bg-blue-50 text-blue-600"
+                    subtitle="Closed historical"
                 />
-                <StatCard 
-                    label="Verification" 
-                    value="Active" 
-                    icon={<Check size={18} />} 
-                    iconColor="bg-purple-50 text-purple-600" 
-                    subtitle="System status" 
+                <StatCard
+                    label="Verification"
+                    value="Active"
+                    icon={<Check size={18} />}
+                    iconColor="bg-purple-50 text-purple-600"
+                    subtitle="System status"
                 />
             </div>
 
             <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Reservation Requests</h2>
-                    
+                    <div className="flex items-center gap-4">
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Recent Requests</h2>
+                        <button
+                            onClick={() => navigate('/admin/bookings')}
+                            className="text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider hover:opacity-80 transition-opacity"
+                        >
+                            View All
+                        </button>
+                    </div>
+
                     {/* Unified Filter Tabs */}
                     <div className="flex gap-1 p-1 bg-[var(--surface-2)] rounded-lg w-fit">
                         {filters.map(s => (
@@ -129,11 +141,10 @@ export const InchargeDashboard = () => {
                                     </div>
                                     <div className="flex flex-col items-end gap-1 shrink-0">
                                         {booking.unit_number && <span className="badge badge-blue">#{booking.unit_number}</span>}
-                                        <span className={`badge ${
-                                            booking.status === BookingStatus.PENDING ? 'badge-amber' :
+                                        <span className={`badge ${booking.status === BookingStatus.PENDING ? 'badge-amber' :
                                             booking.status === BookingStatus.APPROVED ? 'badge-green' :
-                                            booking.status === BookingStatus.REJECTED ? 'badge-red' : 'badge-blue'
-                                        }`}>{booking.status}</span>
+                                                booking.status === BookingStatus.REJECTED ? 'badge-red' : 'badge-blue'
+                                            }`}>{booking.status}</span>
                                     </div>
                                 </div>
 
@@ -186,7 +197,7 @@ export const InchargeDashboard = () => {
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 {booking.status !== BookingStatus.PENDING && (
                                     <div className="mt-auto pt-3 border-t border-[color:var(--border)] flex flex-col gap-1">
                                         {booking.rejection_reason && (

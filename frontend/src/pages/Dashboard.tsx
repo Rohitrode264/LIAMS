@@ -5,17 +5,18 @@ import { StudentDashboard } from './StudentDashboard';
 import { InchargeDashboard } from './InchargeDashboard';
 import { AssistantDashboard } from './AssistantDashboard';
 import { AdminDashboard } from './AdminDashboard';
-import { 
-    FlaskConical, FileText, ArrowRight, ClipboardList, 
+import {
+    ArrowRight, ClipboardList,
     Inbox, IndianRupee, History
 } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { StatCard } from '../components/StatCard';
 import { useQuery } from '@tanstack/react-query';
-import { 
-    getProfessorQueue, getHODQueue, getAccountsQueue, getReviewHistory 
+import {
+    getProfessorQueue, getHODQueue, getAccountsQueue, getReviewHistory
 } from '../api/applicationApi';
 
+//@ts-ignore
 const ModuleCard = ({
     icon, title, description, color, onClick,
 }: {
@@ -43,55 +44,56 @@ const ModuleCard = ({
 const ReviewerDashboard = ({ role }: { role: UserRole }) => {
     const navigate = useNavigate();
     const { user } = useAuthStore();
-    
+
     // Select the appropriate queue function based on role
-    const queueFn = role === UserRole.PROFESSOR ? getProfessorQueue 
-                   : role === UserRole.HOD ? getHODQueue 
-                   : getAccountsQueue;
+    const queueFn = role === UserRole.PROFESSOR ? getProfessorQueue
+        : role === UserRole.HOD ? getHODQueue
+            : getAccountsQueue;
 
     const { data: queue = [] } = useQuery({
         queryKey: ['review-queue', role, user?._id],
         queryFn: queueFn
     });
 
-    const { data: history = [], isLoading: loadingHistory } = useQuery({
+    const { data: historyData, isLoading: loadingHistory } = useQuery({
         queryKey: ['review-history', role, user?._id],
-        queryFn: getReviewHistory
+        queryFn: () => getReviewHistory(1, 5)
     });
+    const history = historyData?.applications || [];
 
-    const roleLabel = role === UserRole.PROFESSOR ? 'Professor' 
-                    : role === UserRole.HOD ? 'HOD' 
-                    : 'Accounts';
+    const roleLabel = role === UserRole.PROFESSOR ? 'Professor'
+        : role === UserRole.HOD ? 'HOD'
+            : 'Accounts';
 
     return (
         <div className="page-enter space-y-8">
-            <PageHeader 
-                title={`${roleLabel} Dashboard`} 
+            <PageHeader
+                title={`${roleLabel} Dashboard`}
                 subtitle="Overview of your review tasks and application history."
             />
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <StatCard 
-                    label="Pending Review" 
-                    value={queue.length} 
-                    icon={<Inbox size={18} />} 
-                    iconColor="bg-amber-50 text-amber-600" 
-                    subtitle="Queue size" 
+                <StatCard
+                    label="Pending Review"
+                    value={queue.length}
+                    icon={<Inbox size={18} />}
+                    iconColor="bg-amber-50 text-amber-600"
+                    subtitle="Queue size"
                 />
-                <StatCard 
-                    label="Reviewed Items" 
-                    value={history.length} 
-                    icon={<History size={18} />} 
-                    iconColor="bg-blue-50 text-blue-600" 
-                    subtitle="Past decisions" 
+                <StatCard
+                    label="Reviewed Items"
+                    value={history.length}
+                    icon={<History size={18} />}
+                    iconColor="bg-blue-50 text-blue-600"
+                    subtitle="Past decisions"
                 />
-                <StatCard 
-                    label="Messages" 
-                    value="0" 
-                    icon={<ClipboardList size={18} />} 
-                    iconColor="bg-purple-50 text-purple-600" 
-                    subtitle="Latest alerts" 
+                <StatCard
+                    label="Messages"
+                    value="0"
+                    icon={<ClipboardList size={18} />}
+                    iconColor="bg-purple-50 text-purple-600"
+                    subtitle="Latest alerts"
                 />
             </div>
 
@@ -99,7 +101,7 @@ const ReviewerDashboard = ({ role }: { role: UserRole }) => {
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Recent Decisions</h2>
-                    <button 
+                    <button
                         onClick={() => navigate('/applications/history')}
                         className="text-[11px] font-bold text-[var(--primary)] uppercase hover:opacity-80 transition-opacity"
                     >
@@ -146,10 +148,9 @@ const ReviewerDashboard = ({ role }: { role: UserRole }) => {
                                                 {new Date(app.updatedAt).toLocaleDateString('en-IN')}
                                             </td>
                                             <td>
-                                                <span className={`badge ${
-                                                    app.status === 'Approved' ? 'badge-green' : 
-                                                    app.status === 'Rejected' ? 'badge-red' : 'badge-blue'
-                                                }`}>
+                                                <span className={`badge ${app.status === 'Approved' ? 'badge-green' :
+                                                        app.status === 'Rejected' ? 'badge-red' : 'badge-blue'
+                                                    }`}>
                                                     {app.status}
                                                 </span>
                                             </td>
@@ -171,7 +172,7 @@ export const Dashboard = () => {
     if (userRoles.includes(UserRole.ADMIN)) return <AdminDashboard />;
     if (userRoles.includes(UserRole.LAB_INCHARGE)) return <InchargeDashboard />;
     if (userRoles.includes(UserRole.ASSISTANT)) return <AssistantDashboard />;
-    
+
     if (userRoles.includes(UserRole.PROFESSOR)) return <ReviewerDashboard role={UserRole.PROFESSOR} />;
     if (userRoles.includes(UserRole.HOD)) return <ReviewerDashboard role={UserRole.HOD} />;
     if (userRoles.includes(UserRole.ACCOUNTANT)) return <ReviewerDashboard role={UserRole.ACCOUNTANT} />;
