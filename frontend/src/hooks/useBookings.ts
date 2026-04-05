@@ -3,11 +3,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { PaginatedBookings, Booking } from '../types';
 import toast from 'react-hot-toast';
 
-export const useBookings = (page = 1, limit = 10) => {
+export const useBookings = (page = 1, limit = 10, status: string = 'ALL') => {
     return useQuery({
-        queryKey: ['bookings', page, limit],
+        queryKey: ['bookings', page, limit, status],
         queryFn: async () => {
-            const response = await api.get<PaginatedBookings>(`/bookings?page=${page}&limit=${limit}`);
+            const statusParam = status !== 'ALL' ? `&status=${status}` : '';
+            const response = await api.get<PaginatedBookings>(`/bookings?page=${page}&limit=${limit}${statusParam}`);
             return response.data;
         },
     });

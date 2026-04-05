@@ -76,7 +76,8 @@ export const ReviewHistoryPage = () => {
             ) : (
                 <div className="space-y-4">
                     <div className="card overflow-hidden bg-[var(--surface)] shadow-sm">
-                        <div className="overflow-x-auto">
+                        {/* Desktop Table View */}
+                        <div className="hidden md:block overflow-x-auto">
                             <table className="data-table">
                                 <thead>
                                     <tr>
@@ -122,7 +123,7 @@ export const ReviewHistoryPage = () => {
                                             </td>
                                             <td>
                                                 <span className={`badge text-[10px] font-bold ${app.status === 'Approved' ? 'badge-green' :
-                                                        app.status === 'Rejected' ? 'badge-red' : 'badge-amber'
+                                                    app.status === 'Rejected' ? 'badge-red' : 'badge-amber'
                                                     }`}>
                                                     {app.status}
                                                 </span>
@@ -136,6 +137,55 @@ export const ReviewHistoryPage = () => {
                                     ))}
                                 </tbody>
                             </table>
+                        </div>
+
+                        {/* Mobile Card View */}
+                        <div className="md:hidden divide-y divide-[var(--border)]">
+                            {filteredHistory.map((app: Application) => (
+                                <div
+                                    key={app._id}
+                                    onClick={() => navigate(`/applications/${app._id}`)}
+                                    className="p-5 space-y-4 hover:bg-[var(--surface-2)] transition-colors cursor-pointer"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="avatar w-9 h-9 text-[10px] font-bold shadow-sm">
+                                                {app.student_id?.name?.slice(0, 2).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <p className="text-[13px] font-black text-[var(--text)] leading-none mb-1">
+                                                    {app.student_id?.name || 'Unknown'}
+                                                </p>
+                                                <p className="text-[9px] text-[var(--muted)] font-black uppercase tracking-widest opacity-60">
+                                                    Authorised: {new Date(app.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span className={`badge text-[9px] font-black uppercase tracking-tighter ${app.status === 'Approved' ? 'badge-green' :
+                                            app.status === 'Rejected' ? 'badge-red' : 'badge-amber'
+                                            }`}>
+                                            {app.status}
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-[12px] font-bold text-[var(--text)] line-clamp-1">{app.title}</p>
+                                        <p className="text-[10px] text-[var(--muted)] opacity-70 mt-0.5">ID: {app._id.slice(-8).toUpperCase()}</p>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-1">
+                                        <div className="flex items-center gap-1 text-[var(--text)] font-black">
+                                            <IndianRupee size={11} className="text-[var(--muted)]" />
+                                            <span className="text-[14px] tracking-tight">
+                                                {app.amount_requested.toLocaleString('en-IN')}
+                                            </span>
+                                        </div>
+                                        <div className="text-[10px] font-bold text-[var(--muted)] flex items-center gap-1">
+                                            View Archive <ChevronRight size={12} />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 

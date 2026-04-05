@@ -32,7 +32,7 @@ const CreateUserModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
     const { data: labsData } = useLabs(1, 100);
 
     const toggleLab = (id: string) => {
-        setSelectedLabs(prev => 
+        setSelectedLabs(prev =>
             prev.includes(id) ? prev.filter(l => l !== id) : [...prev, id]
         );
     };
@@ -48,7 +48,7 @@ const CreateUserModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
     if (!isOpen) return null;
     return createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-slate-950/40 backdrop-blur-xl animate-in fade-in duration-300">
-            <div 
+            <div
                 className="absolute inset-0 bg-slate-950/40"
                 onClick={onClose}
             />
@@ -98,11 +98,10 @@ const CreateUserModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
                                             key={lab._id}
                                             type="button"
                                             onClick={() => toggleLab(lab._id)}
-                                            className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all ${
-                                                selectedLabs.includes(lab._id)
+                                            className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all ${selectedLabs.includes(lab._id)
                                                 ? 'bg-[var(--primary)] border-[var(--primary)] text-white shadow-md'
                                                 : 'bg-[var(--surface)] border-[color:var(--border)] text-[var(--muted)]'
-                                            }`}
+                                                }`}
                                         >
                                             {lab.name}
                                         </button>
@@ -150,14 +149,14 @@ export const UsersPage = () => {
     const handleAssignLab = (user: User, labId: string) => {
         const currentLabs = user.labs_assigned || [];
         const isAssigned = currentLabs.includes(labId);
-        
+
         let newLabs: string[];
         if (isAssigned) {
             newLabs = currentLabs.filter(id => id !== labId);
         } else {
             newLabs = [...currentLabs, labId];
         }
-        
+
         updateUser.mutate({ id: user._id, labs_assigned: newLabs });
     };
 
@@ -205,9 +204,10 @@ export const UsersPage = () => {
                 </div>
             </div>
 
-            {/* Table */}
+            {/* Users List */}
             <div className="card overflow-hidden">
-                <div className="overflow-x-auto">
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="data-table">
                         <thead>
                             <tr>
@@ -266,11 +266,10 @@ export const UsersPage = () => {
                                                             <button
                                                                 key={lab._id}
                                                                 onClick={() => handleAssignLab(user, lab._id)}
-                                                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold border transition-all ${
-                                                                    isAssigned 
-                                                                    ? 'bg-[var(--primary)] border-[var(--primary)] text-white' 
+                                                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold border transition-all ${isAssigned
+                                                                    ? 'bg-[var(--primary)] border-[var(--primary)] text-white'
                                                                     : 'bg-transparent border-[color:var(--border)] text-[var(--muted)] hover:border-[var(--muted)]'
-                                                                }`}
+                                                                    }`}
                                                             >
                                                                 {lab.name}
                                                             </button>
@@ -292,9 +291,84 @@ export const UsersPage = () => {
                             })}
                         </tbody>
                     </table>
-                    {!isLoading && users.length === 0 && (
-                        <div className="py-12 flex flex-col items-center text-center">
-                            <p className="text-sm text-[var(--muted)]">{search ? 'No users match your search.' : 'No users found.'}</p>
+                </div>
+
+                {/* Mobile Card Grid View */}
+                <div className="md:hidden">
+                    {isLoading ? (
+                        <div className="grid grid-cols-1 gap-4">
+                            {[...Array(4)].map((_, i) => (
+                                <div key={i} className="card p-5 h-40 animate-pulse bg-[var(--surface-2)]" />
+                            ))}
+                        </div>
+                    ) : users.length === 0 ? (
+                        <div className="card p-12 text-center text-[var(--muted)] text-sm border-dashed">
+                            {search ? 'No users match your search.' : 'No users found.'}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-4">
+                            {users.map((user: User) => {
+                                const primaryRole = user.roles?.[0] ?? '';
+                                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                                const avatarCls = avatarColors[primaryRole] || 'bg-[var(--surface-2)] text-[var(--muted)]';
+                                const showLabAssign = user.roles?.includes(UserRole.LAB_INCHARGE) || user.roles?.includes(UserRole.ASSISTANT);
+
+                                return (
+                                    <div key={user._id} className="card p-5 space-y-5 animate-in fade-in slide-in-from-bottom-2">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`avatar w-12 h-12 text-sm font-black shrink-0 shadow-sm ${avatarCls}`}>{initials}</div>
+                                                <div className="min-w-0">
+                                                    <h4 className="font-black text-[var(--text)] tracking-tight truncate">{user.name}</h4>
+                                                    <p className="text-[11px] text-[var(--muted)] flex items-center gap-1 mt-1 font-medium truncate">
+                                                        <Mail size={10} /> {user.email}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <span className={`badge ${user.status === 'Active' ? 'badge-green' : 'badge-red'} text-[9px] font-black uppercase tracking-tighter`}>{user.status}</span>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <div className="space-y-1.5 group">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] ml-1 group-focus-within:text-[var(--primary)] transition-colors">Security Role</p>
+                                                <select
+                                                    className="form-input text-xs py-2.5 bg-[var(--surface-2)] border-transparent font-black focus:bg-white transition-all shadow-sm"
+                                                    value={primaryRole}
+                                                    onChange={e => handleRoleChange(user, e.target.value as UserRole)}
+                                                >
+                                                    <option value={UserRole.ADMIN}>Administrator</option>
+                                                    <option value={UserRole.LAB_INCHARGE}>Lab In-Charge</option>
+                                                    <option value={UserRole.ASSISTANT}>Assistant</option>
+                                                    <option value={UserRole.STUDENT}>Student</option>
+                                                    <option value={UserRole.PROFESSOR}>Professor</option>
+                                                    <option value={UserRole.HOD}>Head of Department</option>
+                                                    <option value={UserRole.ACCOUNTANT}>Accountant</option>
+                                                </select>
+                                            </div>
+
+                                            {showLabAssign && (
+                                                <div className="space-y-2">
+                                                    <p className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] ml-1">Lab Access / Assignments</p>
+                                                    <div className="flex flex-wrap gap-2 p-4 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] border-dashed">
+                                                        {labsData?.labs?.map((lab: Lab) => (
+                                                            <button
+                                                                key={lab._id}
+                                                                onClick={() => handleAssignLab(user, lab._id)}
+                                                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-tight transition-all border ${(user.labs_assigned || []).includes(lab._id)
+                                                                    ? 'bg-[var(--primary)] text-white border-transparent shadow-md shadow-blue-500/20 scale-105'
+                                                                    : 'bg-white text-[var(--muted)] border-[var(--border)] hover:border-[var(--primary)]'
+                                                                    }`}
+                                                            >
+                                                                {lab.name}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
                 </div>

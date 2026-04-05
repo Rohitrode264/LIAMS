@@ -7,7 +7,7 @@ import { AssistantDashboard } from './AssistantDashboard';
 import { AdminDashboard } from './AdminDashboard';
 import {
     ArrowRight, ClipboardList,
-    Inbox, IndianRupee, History
+    Inbox, IndianRupee, History, ChevronRight
 } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { StatCard } from '../components/StatCard';
@@ -118,47 +118,99 @@ const ReviewerDashboard = ({ role }: { role: UserRole }) => {
                             <p className="text-sm text-[var(--muted)] font-medium">No past applications found</p>
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Applicant</th>
-                                        <th className="hidden sm:table-cell">Title</th>
-                                        <th>Amount</th>
-                                        <th className="hidden md:table-cell">Updated</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {history.slice(0, 5).map((app: any) => (
-                                        <tr key={app._id} className="group cursor-pointer" onClick={() => navigate(`/applications/${app._id}`)}>
-                                            <td>
-                                                <div className="flex items-center gap-2 font-medium">
-                                                    {app.student_id?.name || 'Unknown'}
-                                                </div>
-                                            </td>
-                                            <td className="hidden sm:table-cell max-w-[200px] truncate">{app.title}</td>
-                                            <td>
-                                                <div className="flex items-center gap-1 font-semibold">
-                                                    <IndianRupee size={12} />
-                                                    {app.amount_requested?.toLocaleString('en-IN')}
-                                                </div>
-                                            </td>
-                                            <td className="hidden md:table-cell text-[var(--muted)] text-[12px]">
-                                                {new Date(app.updatedAt).toLocaleDateString('en-IN')}
-                                            </td>
-                                            <td>
-                                                <span className={`badge ${app.status === 'Approved' ? 'badge-green' :
-                                                        app.status === 'Rejected' ? 'badge-red' : 'badge-blue'
-                                                    }`}>
-                                                    {app.status}
-                                                </span>
-                                            </td>
+                        <>
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block">
+                                <table className="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Applicant</th>
+                                            <th className="hidden sm:table-cell">Title</th>
+                                            <th>Amount</th>
+                                            <th className="hidden md:table-cell">Updated</th>
+                                            <th>Status</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        {history.slice(0, 5).map((app: any) => (
+                                            <tr key={app._id} className="group cursor-pointer" onClick={() => navigate(`/applications/${app._id}`)}>
+                                                <td>
+                                                    <div className="flex items-center gap-2 font-medium">
+                                                        {app.student_id?.name || 'Unknown'}
+                                                    </div>
+                                                </td>
+                                                <td className="hidden sm:table-cell max-w-[200px] truncate">{app.title}</td>
+                                                <td>
+                                                    <div className="flex items-center gap-1 font-semibold">
+                                                        <IndianRupee size={12} />
+                                                        {app.amount_requested?.toLocaleString('en-IN')}
+                                                    </div>
+                                                </td>
+                                                <td className="hidden md:table-cell text-[var(--muted)] text-[12px]">
+                                                    {new Date(app.updatedAt).toLocaleDateString('en-IN')}
+                                                </td>
+                                                <td>
+                                                    <span className={`badge ${app.status === 'Approved' ? 'badge-green' :
+                                                        app.status === 'Rejected' ? 'badge-red' : 'badge-blue'
+                                                        }`}>
+                                                        {app.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Mobile Card View */}
+                            <div className="md:hidden divide-y divide-[var(--border)]">
+                                {history.slice(0, 5).map((app: any) => (
+                                    <div
+                                        key={app._id}
+                                        onClick={() => navigate(`/applications/${app._id}`)}
+                                        className="p-5 space-y-4 hover:bg-[var(--surface-2)] transition-colors cursor-pointer"
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="avatar w-9 h-9 text-[10px]">
+                                                    {app.student_id?.name?.slice(0, 2).toUpperCase() || '??'}
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-black text-[var(--text)] tracking-tight">
+                                                        {app.student_id?.name || 'Unknown Student'}
+                                                    </p>
+                                                    <p className="text-[11px] text-[var(--muted)] font-medium mt-0.5">
+                                                        {new Date(app.updatedAt).toLocaleDateString('en-IN', {
+                                                            day: 'numeric',
+                                                            month: 'short'
+                                                        })}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <span className={`badge ${app.status === 'Approved' ? 'badge-green' :
+                                                app.status === 'Rejected' ? 'badge-red' : 'badge-blue'
+                                                } text-[10px]`}>
+                                                {app.status}
+                                            </span>
+                                        </div>
+
+                                        <p className="text-[13px] font-bold text-[var(--text)] line-clamp-1 opacity-90">{app.title}</p>
+
+                                        <div className="flex items-center justify-between pt-1">
+                                            <div className="flex items-center gap-1.5 text-[var(--primary)] font-black">
+                                                <IndianRupee size={12} />
+                                                <span className="text-sm tracking-tight">
+                                                    {app.amount_requested?.toLocaleString('en-IN')}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1 text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">
+                                                Details <ChevronRight size={12} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
                     )}
                 </div>
             </div>

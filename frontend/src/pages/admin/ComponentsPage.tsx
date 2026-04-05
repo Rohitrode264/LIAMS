@@ -131,37 +131,95 @@ export const ComponentsPage = () => {
                                     <p className="text-sm text-[var(--muted)]">No equipment registered for this lab.</p>
                                 </div>
                             ) : (
-                                <div className="overflow-x-auto">
-                                    <table className="data-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th className="w-40">Status</th>
-                                                <th className="w-20 text-right">Save</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {components.map((c: Component) => {
-                                                const draft = edits[c._id] || {};
-                                                const isEdited = !!edits[c._id];
-                                                return (
-                                                    <tr key={c._id} className={isEdited ? 'bg-blue-50/30' : ''}>
-                                                        <td>
+                                <>
+                                    {/* Desktop Table View */}
+                                    <div className="hidden md:block overflow-x-auto">
+                                        <table className="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th className="w-40">Status</th>
+                                                    <th className="w-20 text-right">Save</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {components.map((c: Component) => {
+                                                    const draft = edits[c._id] || {};
+                                                    const isEdited = !!edits[c._id];
+                                                    return (
+                                                        <tr key={c._id} className={isEdited ? 'bg-blue-50/30' : ''}>
+                                                            <td>
+                                                                <input
+                                                                    className="w-full bg-transparent outline-none font-semibold text-[var(--text)] text-[13px] py-1 border-b border-transparent focus:border-[var(--primary)] transition-all"
+                                                                    defaultValue={c.name}
+                                                                    onChange={e => setEdits(s => ({ ...s, [c._id]: { ...draft, name: e.target.value } }))}
+                                                                />
+                                                                <input
+                                                                    className="w-full bg-transparent outline-none text-[11px] text-[var(--muted)] py-0.5"
+                                                                    defaultValue={c.description}
+                                                                    placeholder="Description…"
+                                                                    onChange={e => setEdits(s => ({ ...s, [c._id]: { ...draft, description: e.target.value } }))}
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <select
+                                                                    className="form-input text-[12px] py-1.5"
+                                                                    defaultValue={c.status}
+                                                                    onChange={e => setEdits(s => ({ ...s, [c._id]: { ...draft, status: e.target.value as Component['status'] } }))}
+                                                                >
+                                                                    <option value="Available">Available</option>
+                                                                    <option value="Maintenance">Maintenance</option>
+                                                                    <option value="Inactive">Inactive</option>
+                                                                </select>
+                                                            </td>
+                                                            <td className="text-right">
+                                                                <button
+                                                                    onClick={() => onSaveRow(c)}
+                                                                    disabled={!isEdited || updateComponent.isPending}
+                                                                    title="Save changes"
+                                                                    className={`p-2 rounded-lg transition-all ${isEdited ? 'bg-[var(--primary)] text-white shadow-sm' : 'bg-[var(--surface-2)] text-[var(--muted)] opacity-40'}`}
+                                                                >
+                                                                    <Save size={14} />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* Mobile Card View */}
+                                    <div className="md:hidden divide-y divide-[var(--border)]">
+                                        {components.map((c: Component) => {
+                                            const draft = edits[c._id] || {};
+                                            const isEdited = !!edits[c._id];
+                                            return (
+                                                <div key={c._id} className={`p-5 space-y-4 transition-all ${isEdited ? 'bg-[var(--surface-2)]' : ''}`}>
+                                                    <div className="space-y-3">
+                                                        <div>
+                                                            <p className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] mb-1">Equipment Name</p>
                                                             <input
-                                                                className="w-full bg-transparent outline-none font-semibold text-[var(--text)] text-[13px] py-1 border-b border-transparent focus:border-[var(--primary)] transition-all"
+                                                                className="w-full bg-transparent outline-none font-bold text-[var(--text)] text-[14px] p-0 border-none"
                                                                 defaultValue={c.name}
                                                                 onChange={e => setEdits(s => ({ ...s, [c._id]: { ...draft, name: e.target.value } }))}
                                                             />
-                                                            <input
-                                                                className="w-full bg-transparent outline-none text-[11px] text-[var(--muted)] py-0.5"
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)] mb-1">Detailed Description</p>
+                                                            <textarea
+                                                                className="w-full bg-transparent outline-none text-[12px] text-[var(--muted)] p-0 border-none resize-none min-h-[40px]"
                                                                 defaultValue={c.description}
-                                                                placeholder="Description…"
+                                                                placeholder="Add description…"
                                                                 onChange={e => setEdits(s => ({ ...s, [c._id]: { ...draft, description: e.target.value } }))}
                                                             />
-                                                        </td>
-                                                        <td>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex items-center justify-between pt-2">
+                                                        <div className="flex-1 max-w-[150px]">
                                                             <select
-                                                                className="form-input text-[12px] py-1.5"
+                                                                className="form-input text-[11px] py-1.5 bg-white shadow-sm border-gray-100"
                                                                 defaultValue={c.status}
                                                                 onChange={e => setEdits(s => ({ ...s, [c._id]: { ...draft, status: e.target.value as Component['status'] } }))}
                                                             >
@@ -169,23 +227,23 @@ export const ComponentsPage = () => {
                                                                 <option value="Maintenance">Maintenance</option>
                                                                 <option value="Inactive">Inactive</option>
                                                             </select>
-                                                        </td>
-                                                        <td className="text-right">
-                                                            <button
-                                                                onClick={() => onSaveRow(c)}
-                                                                disabled={!isEdited || updateComponent.isPending}
-                                                                title="Save changes"
-                                                                className={`p-2 rounded-lg transition-all ${isEdited ? 'bg-[var(--primary)] text-white shadow-sm' : 'bg-[var(--surface-2)] text-[var(--muted)] opacity-40'}`}
-                                                            >
-                                                                <Save size={14} />
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => onSaveRow(c)}
+                                                            disabled={!isEdited || updateComponent.isPending}
+                                                            className={`btn flex items-center gap-2 py-1.5 px-4 text-[11px] font-bold uppercase tracking-wider transition-all ${isEdited
+                                                                ? 'bg-[var(--primary)] text-white shadow-lg shadow-blue-500/20'
+                                                                : 'bg-[var(--surface-2)] text-[var(--muted)] opacity-50'
+                                                                }`}
+                                                        >
+                                                            <Save size={13} /> {isEdited ? 'Save Changes' : 'Saved'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </>
                             )}
                         </div>
                     </div>

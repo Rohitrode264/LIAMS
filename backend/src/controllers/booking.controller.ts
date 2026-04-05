@@ -393,6 +393,10 @@ export async function getBookings(req: AuthRequest, res: Response, next: NextFun
             query = { ...query, lab_id: req.query.lab_id };
         }
 
+        if (req.query.status && req.query.status !== 'ALL') {
+            query = { ...query, status: req.query.status };
+        }
+
         const bookings = await Booking.find(query)
             .populate("student_id", "name email")
             .populate("component_id", "name")

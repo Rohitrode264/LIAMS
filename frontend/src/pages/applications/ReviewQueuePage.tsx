@@ -26,11 +26,11 @@ export const ReviewQueuePage = () => {
 
     const queueFn = isProfessor ? getProfessorQueue
         : isHOD ? getHODQueue
-        : getAccountsQueue;
+            : getAccountsQueue;
 
     const stageLabel = isProfessor ? 'Professor Review'
         : isHOD ? 'HOD Review'
-        : 'Accounts Review';
+            : 'Accounts Review';
 
     const { data: applications = [], isLoading } = useQuery({
         queryKey: ['review-queue', user?._id],
@@ -40,8 +40,8 @@ export const ReviewQueuePage = () => {
 
     return (
         <div className="page-enter space-y-6">
-            <PageHeader 
-                title="Review Queue" 
+            <PageHeader
+                title="Review Queue"
                 subtitle={`Applications pending your ${stageLabel} stage approval.`}
             />
 
@@ -65,7 +65,9 @@ export const ReviewQueuePage = () => {
                             {applications.length} Pending applications
                         </span>
                     </div>
-                    <div className="overflow-x-auto">
+
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto">
                         <table className="data-table">
                             <thead>
                                 <tr>
@@ -119,6 +121,59 @@ export const ReviewQueuePage = () => {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-[var(--border)]">
+                        {applications.map((app: Application) => (
+                            <div
+                                key={app._id}
+                                onClick={() => navigate(`/applications/${app._id}`)}
+                                className="p-5 space-y-4 hover:bg-[var(--surface-2)] transition-colors cursor-pointer animate-in fade-in slide-in-from-bottom-2"
+                            >
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="avatar w-9 h-9 text-[10px] font-bold shadow-sm">
+                                            {app.student_id?.name?.slice(0, 2).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-black text-[var(--text)] tracking-tight">
+                                                {app.student_id?.name || 'Unknown student'}
+                                            </p>
+                                            <p className="text-[10px] text-[var(--muted)] font-black uppercase tracking-widest mt-0.5 opacity-60">
+                                                {new Date(app.createdAt).toLocaleDateString('en-IN', {
+                                                    day: 'numeric',
+                                                    month: 'short',
+                                                    year: 'numeric'
+                                                })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span className="badge badge-amber text-[9px] font-black uppercase tracking-tighter">
+                                        {statusLabel[app.status]}
+                                    </span>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className="text-[13px] font-bold text-[var(--text)] line-clamp-1">{app.title}</p>
+                                    <p className="text-[11px] text-[var(--muted)] line-clamp-1 font-medium italic opacity-70">
+                                        "{app.description}"
+                                    </p>
+                                </div>
+
+                                <div className="flex items-center justify-between pt-1">
+                                    <div className="flex items-center gap-1.5 text-[var(--primary)] font-black">
+                                        <IndianRupee size={12} strokeWidth={3} />
+                                        <span className="text-[15px] tracking-tight">
+                                            {app.amount_requested.toLocaleString('en-IN')}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-[10px] font-black text-[var(--primary)] uppercase tracking-widest bg-[var(--primary-muted)] px-3 py-1.5 rounded-full shadow-sm">
+                                        Review Details <ChevronRight size={12} strokeWidth={3} />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
